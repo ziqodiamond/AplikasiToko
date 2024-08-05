@@ -43,13 +43,17 @@ public class MainView extends javax.swing.JFrame {
         menu5 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 204, 204));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setPreferredSize(new java.awt.Dimension(250, 768));
 
         jLabel1.setText("Aplikasi Toko");
 
+        menu1.setBackground(new java.awt.Color(204, 204, 204));
         menu1.setPreferredSize(new java.awt.Dimension(200, 42));
 
         jPanel4.setBackground(new java.awt.Color(0, 0, 0));
@@ -65,6 +69,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Dashboard");
 
         javax.swing.GroupLayout menu1Layout = new javax.swing.GroupLayout(menu1);
@@ -86,6 +91,7 @@ public class MainView extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        menu2.setBackground(new java.awt.Color(204, 204, 204));
         menu2.setPreferredSize(new java.awt.Dimension(200, 42));
 
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
@@ -101,6 +107,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jLabel3.setForeground(new java.awt.Color(51, 51, 51));
         jLabel3.setText("Transaksi");
 
         javax.swing.GroupLayout menu2Layout = new javax.swing.GroupLayout(menu2);
@@ -122,6 +129,7 @@ public class MainView extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        menu3.setBackground(new java.awt.Color(204, 204, 204));
         menu3.setPreferredSize(new java.awt.Dimension(200, 42));
 
         jPanel6.setBackground(new java.awt.Color(0, 0, 0));
@@ -138,6 +146,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Gudang");
 
         javax.swing.GroupLayout menu3Layout = new javax.swing.GroupLayout(menu3);
@@ -159,6 +168,8 @@ public class MainView extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        menu4.setBackground(new java.awt.Color(204, 204, 204));
+        menu4.setForeground(new java.awt.Color(204, 204, 204));
         menu4.setPreferredSize(new java.awt.Dimension(200, 42));
 
         jPanel7.setBackground(new java.awt.Color(0, 0, 0));
@@ -175,6 +186,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jLabel5.setForeground(new java.awt.Color(51, 51, 51));
         jLabel5.setText("Mutasi Transaksi");
 
         javax.swing.GroupLayout menu4Layout = new javax.swing.GroupLayout(menu4);
@@ -196,6 +208,7 @@ public class MainView extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
+        menu5.setBackground(new java.awt.Color(204, 204, 204));
         menu5.setPreferredSize(new java.awt.Dimension(200, 42));
 
         jPanel8.setBackground(new java.awt.Color(0, 0, 0));
@@ -212,6 +225,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
         jLabel6.setText("Laporan Keuangan");
 
         javax.swing.GroupLayout menu5Layout = new javax.swing.GroupLayout(menu5);
@@ -271,8 +285,12 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(menu4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(menu5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(603, Short.MAX_VALUE))
+                .addContainerGap(377, Short.MAX_VALUE))
         );
+
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel2.setPreferredSize(new java.awt.Dimension(358, 768));
+        jPanel2.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -280,13 +298,13 @@ public class MainView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 732, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 346, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -335,6 +353,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
