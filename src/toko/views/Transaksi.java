@@ -280,7 +280,7 @@ connectDatabase();
         ));
         jScrollPane1.setViewportView(tablePenjualan);
 
-        cmbPembayaran.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbPembayaran.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tunai", "Non Tunai" }));
 
         simpan.setText("simpan");
         simpan.addActionListener(new java.awt.event.ActionListener() {

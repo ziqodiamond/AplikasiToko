@@ -18,7 +18,7 @@ class koneksi {
             String url ="jdbc:mysql://localhost:3306/login1";
             String user ="root";
             String password = "";
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
             mysqlconfig=DriverManager.getConnection(url, user, password);
         }catch (Exception e) {
             System.err.println("koneksi gagal"+e.getMessage());
@@ -31,6 +31,10 @@ class koneksi {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+    }
+
+    static Connection getKoneksi() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
  
