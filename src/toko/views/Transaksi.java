@@ -6,6 +6,14 @@ package toko.views;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -30,7 +38,9 @@ connectDatabase();
         model.addColumn("Harga");
         model.addColumn("Jumlah");
         model.addColumn("Subtotal");
-
+        model.addColumn("pembayaran");
+        model.addColumn("tanggal");
+       
     }
      private void connectDatabase() {
         try {
@@ -52,6 +62,7 @@ connectDatabase();
     try {
         String kodeBarang = txtKodeBarang.getText();
         
+        
         // Establish the database connection
         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login1", "root", "");
 
@@ -60,16 +71,16 @@ connectDatabase();
         pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, kodeBarang);
         rs = pstmt.executeQuery();
+        java.sql.Date sqlDate = java.sql.Date.valueOf(txtTanggal.getText());
 
         // Check if the item exists in the database
         if (rs.next()) {
             String namaBarang = rs.getString("nama_barang");
             double harga = rs.getDouble("harga_jual");
-            int jumlah = Integer.parseInt(txtJumlah.getText());
-            double subtotal = harga * jumlah;
-
-            // Add the retrieved data to the table model
-            model.addRow(new Object[]{model.getRowCount() + 1, kodeBarang, namaBarang, harga, jumlah, subtotal});
+int jumlah = Integer.parseInt(txtJumlah.getText());
+double subtotal = harga * jumlah;
+String pembayaran = cmbPembayaran.getSelectedItem().toString();
+model.addRow(new Object[]{model.getRowCount() + 1, kodeBarang, namaBarang, harga, jumlah, subtotal, pembayaran, sqlDate});       
         } else {
             JOptionPane.showMessageDialog(null, "Item not found.");
         }
@@ -127,18 +138,24 @@ connectDatabase();
         }
         
         // Menyimpan data detail penjualan
-        String sqlDetail = "INSERT INTO penjualan_detail (id_penjualan, kode_barang, nama_barang, harga, jumlah, subtotal) VALUES (?, ?, ?, ?, ?, ?)";
-        pstDetail = conn.prepareStatement(sqlDetail);
         
-        for (int i = 0; i < model.getRowCount(); i++) {
-            pstDetail.setInt(1, idPenjualan);
-            pstDetail.setString(2, (String) model.getValueAt(i, 1));
-            pstDetail.setString(3, (String) model.getValueAt(i, 2));
-            pstDetail.setDouble(4, (Double) model.getValueAt(i, 3));
-            pstDetail.setInt(5, (Integer) model.getValueAt(i, 4));
-            pstDetail.setDouble(6, (Double) model.getValueAt(i, 5));
-            pstDetail.addBatch();
-        }
+String sqlDetail = "INSERT INTO penjualan_detail (id_penjualan, kode_barang, nama_barang, harga, jumlah, subtotal, pembayaran ,tanggal) VALUES (?, ?, ?, ?, ?, ?, ? ,?)";
+pstDetail = conn.prepareStatement(sqlDetail);
+
+for (int i = 0; i < model.getRowCount(); i++) {
+    pstDetail.setInt(1, idPenjualan);
+    pstDetail.setString(2, (String) model.getValueAt(i, 1));
+    pstDetail.setString(3, (String) model.getValueAt(i, 2));
+    pstDetail.setDouble(4, (Double) model.getValueAt(i, 3));
+    pstDetail.setInt(5, (Integer) model.getValueAt(i, 4));
+    pstDetail.setDouble(6, (Double) model.getValueAt(i, 5));
+    // Ambil data pembayaran dari combo box
+    String pembayaran = cmbPembayaran.getSelectedItem().toString();
+    pstDetail.setString(7, pembayaran) ;
+    pstDetail.setDate(8, sqlDate);
+
+    pstDetail.addBatch();
+}
         
         pstDetail.executeBatch();
         conn.commit();
@@ -175,11 +192,15 @@ connectDatabase();
         }
     }
 }
- public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new Transaksi().setVisible(true);
-        });
-    }    
+public static void main(String args[]) {
+    java.awt.EventQueue.invokeLater(() -> {
+        JFrame frame = new JFrame("Transaksi");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new Transaksi());
+        frame.pack();
+        frame.setVisible(true);
+    });
+}
           
 
     
@@ -217,7 +238,6 @@ connectDatabase();
         tablePenjualan = new javax.swing.JTable();
         cmbPembayaran = new javax.swing.JComboBox<>();
         simpan = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Data Penjualan");
@@ -269,13 +289,13 @@ connectDatabase();
 
         tablePenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "Kode", "Barang", "Harga", "Jumlah", "subtotal"
+                "No", "Kode", "Barang", "Harga", "Jumlah", "subtotal", "pembayaran"
             }
         ));
         jScrollPane1.setViewportView(tablePenjualan);
@@ -288,8 +308,6 @@ connectDatabase();
                 simpanActionPerformed(evt);
             }
         });
-
-        jButton3.setText("cetak");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -315,7 +333,7 @@ connectDatabase();
                                                 .addComponent(jLabel1))
                                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(73, 73, 73))
+                                        .addGap(43, 43, 43))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -341,9 +359,7 @@ connectDatabase();
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(simpan)
-                .addGap(112, 112, 112)
-                .addComponent(jButton3)
-                .addGap(46, 46, 46))
+                .addGap(56, 56, 56))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -380,11 +396,9 @@ connectDatabase();
                         .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(simpan)
-                    .addComponent(jButton3))
-                .addGap(59, 59, 59))
+                .addGap(46, 46, 46)
+                .addComponent(simpan)
+                .addGap(58, 58, 58))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -399,8 +413,6 @@ connectDatabase();
     private void simpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpanActionPerformed
         // TODO add your handling code here:
         simpanPenjualan();
- 
-        
     }//GEN-LAST:event_simpanActionPerformed
 
     private void TambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TambahActionPerformed
@@ -417,7 +429,6 @@ connectDatabase();
     private javax.swing.JTextField Petugas;
     private javax.swing.JButton Tambah;
     private javax.swing.JComboBox<String> cmbPembayaran;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

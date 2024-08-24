@@ -4,23 +4,78 @@
  */
 package toko.views;
 
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+
+
 /**
  *
  * @author Hadziq
  */
 public class Mutasi extends javax.swing.JPanel {
-  
-  
-
+    private DefaultTableModel model;
     /**
      * Creates new form Mutasi
      */
     public Mutasi() {
         initComponents();
- 
+         // Menginisialisasi model tabel
+        model = (DefaultTableModel) tabel.getModel();
+        
+        // Memanggil method untuk menampilkan data dari database ke dalam tabel
+        tampilkanDataPenjualan();
     }
+private void tampilkanDataPenjualan() {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
-    
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login1", "root", "");
+            stmt = conn.createStatement();
+            
+            String sql = "SELECT * FROM penjualan_detail";
+            rs = stmt.executeQuery(sql);
+
+            // Menghapus semua baris yang ada di tabel sebelum menambahkan data baru
+            model.setRowCount(0);
+
+            // Menampilkan data dari database ke dalam tabel
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("id_penjualan"),
+                    rs.getString("kode_barang"),
+                    rs.getString("nama_barang"),
+                    rs.getDouble("harga"),
+                    rs.getInt("jumlah"),
+                    rs.getDouble("subtotal"),
+                    rs.getString("pembayaran"),
+                    rs.getString("tanggal") 
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,7 +90,7 @@ public class Mutasi extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabel = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        cetak = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(885, 780));
 
@@ -44,13 +99,13 @@ public class Mutasi extends javax.swing.JPanel {
 
         tabel.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "kode", "jumlah barang", "total", "pembayaran"
+                "id_transaksi", "Kode_barang", "Barang", "Harga", "Jumlah", "Subtotal", "pembayaran", "Tanggal"
             }
         ));
         tabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -62,12 +117,12 @@ public class Mutasi extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel2.setText("DASHBOARD");
+        jLabel2.setText("Mutasi");
 
-        jButton1.setText("Cetak");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        cetak.setText("Cetak");
+        cetak.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                cetakActionPerformed(evt);
             }
         });
 
@@ -80,10 +135,10 @@ public class Mutasi extends javax.swing.JPanel {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(152, Short.MAX_VALUE)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cetak, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -97,25 +152,60 @@ public class Mutasi extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addComponent(cetak, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(270, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void cetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakActionPerformed
+  Document document = new Document();
+    try {
+        String directoryPath = "D:/projek netbeans pdf";
+        File directory = new File(directoryPath);
+        
+        // Create directory if it doesn't exist
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        
+        String filePath = directoryPath + "/table_data.pdf";
+        PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        document.open();
+        
+        PdfPTable pdfTable = new PdfPTable(tabel.getColumnCount());
+        
+        // Adding table headers
+        for (int i = 0; i < tabel.getColumnCount(); i++) {
+            pdfTable.addCell(tabel.getColumnName(i));
+        }
+        
+        // Adding table rows
+        for (int rows = 0; rows < tabel.getRowCount(); rows++) {
+            for (int cols = 0; cols < tabel.getColumnCount(); cols++) {
+                pdfTable.addCell(tabel.getModel().getValueAt(rows, cols).toString());
+            }
+        }
+        
+        document.add(new Paragraph("Table Data"));
+        document.add(pdfTable);
+        JOptionPane.showMessageDialog(null, "PDF saved to: " + filePath);
+    } catch (DocumentException | IOException e) {
+        e.printStackTrace();
+    } finally {
+        document.close();
+    }
+    }//GEN-LAST:event_cetakActionPerformed
 
     private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
         // TODO add your handling code here:
@@ -124,7 +214,7 @@ public class Mutasi extends javax.swing.JPanel {
     }//GEN-LAST:event_tabelMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton cetak;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
